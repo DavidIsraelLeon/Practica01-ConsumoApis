@@ -13,46 +13,50 @@
 
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light"> 
-    <a class="navbar-brand" href="#">Aplicaciones Distribuidas</a>
+<nav class="navbar navbar-dark bg-dark"> 
+    <a class="navbar-brand" href="index.html">Aplicaciones Distribuidas</a>
     <a class="navbar-brand" href="#">LISTAR TODOS</a>
 
+    <button class="btn btn-outline-success" id="buscar" type="submit">BUSCAR TODOS</button>
+
     <input  type="search" id="search" placeholder="Search" autocomplete="off" aria-label="Search">
-    <section id ="shows" class="grid-fluid"></section>
+    
+</nav>
+
+<section id ="shows" class="grid-fluid">    </section>
     <template id="show-template">
             <article class="show">
 
-            <h3></h3>
+            <h4  class="alert alert-dark" ></h4>
             <div></div>
+            <img></img>
     </article>
     </template>
-</nav>
-
 
 <script>
     const d = document,
     $shows=d.getElementById("shows"),
     $template=d.getElementById("show-template").content,
     $fragment=d.createDocumentFragment();
-
     d.addEventListener('keypress',async e=>{
         if(e.target.matches("#search")){
             //console.log(e.key)
             if (e.key==="Enter"){
                 try {
                     let query = e.target.value.toLowerCase(),
-                    api =`http://api.tvmaze.com/search/shows?q=${query}`,
+                    api =`http://api.tvmaze.com/search/shows?q=${query}`,   
                     res= await fetch(api),
                     json=await res.json();
                     console.log(api,res,json);
                     if(!res.ok) throw {status:res.status,statusText:res.statusText};
 
                     if (json.length===0){
-                        $shows.innerHTML=`<h3> NO existe:${query}</h3>`;
+                        $shows.innerHTML=`<h3> No existe:${query}</h3>`;
                     }else {
                         json.forEach(element => {
-                            $template.querySelector("h3").textContent=element.show.name;
-                            $template.querySelector("div").textContent=element.show.url;                         
+                            $template.querySelector("h4").textContent=element.show.name;
+                            $template.querySelector("div").textContent=element.show.url;    
+                            $template.querySelector("img").textContent=element.show.image;               
 
                             let $clone=d.importNode($template,true);
                             $fragment.append($clone);
@@ -70,6 +74,43 @@
         
         }
     })
+
+    
+    function listar(){
+        try {
+                    
+                    $shows.innerHTML=`<h2>BOTON ACCIONADO</h2>`;
+                    api =`http://api.tvmaze.com/search/shows?q=girls`,   
+                    res= fetch(api),
+                    json=res.json();
+                    console.log(api,res,json);
+                    if(!res.ok) throw {status:res.status,statusText:res.statusText};
+
+                    
+                        json.forEach(element => {
+                            $template.querySelector("h4").textContent=element.show.name;
+                            $template.querySelector("div").textContent=element.show.url;    
+                            $template.querySelector("img").textContent=element.show.image;               
+
+                            let $clone=d.importNode($template,true);
+                            $fragment.append($clone);
+                        });
+                        
+                        $shows.appendChild($fragment);
+                    
+
+                } catch (err) {
+                    console.log(err);
+                    let message=err.statusText||"Ocurrio error";
+                    $shows.innerHTML=`<p>Error ${err.status}:${message}</p>`;                    
+                }
+    }
+    $shows=d.getElementById("buscar").onclick=function(){
+    listar();
+    }
+    
+
+
 
 
 </script>
