@@ -7,36 +7,70 @@
 <link rel ="stylesheet" type="text/css" href="css/bootstrap.min.css">
 <script type="text/javascript" src="js/bootstrap.min.js"></script>
 <script type="text/javascript" src="js/jquery-3.6.0.min.js"></script>
-<script type="text/javascript" src="js/main.js"></script>
+
 
 </head>
+
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-lg navbar-light bg-light"> 
+    <a class="navbar-brand" href="#">Aplicaciones Distribuidas</a>
+    <a class="navbar-brand" href="#">LISTAR TODOS</a>
 
-    <div class="container-fluid">
-      <a class="navbar-brand" href="#">Aplicaciones Distribuidas</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">LISTAR TODOS</a>
-          </li>
-          
-          
-        </ul>
-        <form class="d-flex">
-          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-          <button class="btn btn-outline-success" type="submit">Search</button>
-        </form>
-      </div>
-    </div>
+    <input  type="search" id="search" placeholder="Search" autocomplete="off" aria-label="Search">
+    <section id ="shows" class="grid-fluid"></section>
+    <template id="show-template">
+            <article class="show">
+
+            <h3></h3>
+            <div></div>
+    </article>
+    </template>
 </nav>
 
+
 <script>
-    const d = document,$shows=d.getElementById("shows")
+    const d = document,
+    $shows=d.getElementById("shows"),
+    $template=d.getElementById("show-template").content,
+    $fragment=d.createDocumentFragment();
+
+    d.addEventListener('keypress',async e=>{
+        if(e.target.matches("#search")){
+            //console.log(e.key)
+            if (e.key==="Enter"){
+                try {
+                    let query = e.target.value.toLowerCase(),
+                    api =`http://api.tvmaze.com/search/shows?q=${query}`,
+                    res= await fetch(api),
+                    json=await res.json();
+                    console.log(api,res,json);
+                    if(!res.ok) throw {status:res.status,statusText:res.statusText};
+
+                    if (json.length===0){
+                        $shows.innerHTML=`<h3> NO existe:${query}</h3>`;
+                    }else {
+                        json.forEach(element => {
+                            $template.querySelector("h3").textContent=element.show.name;
+                            $template.querySelector("div").textContent=element.show.url;                         
+
+                            let $clone=d.importNode($template,true);
+                            $fragment.append($clone);
+                        });
+                        
+                        $shows.appendChild($fragment);
+                    }
+
+                } catch (err) {
+                    console.log(err);
+                    let message=err.statusText||"Ocurrio error";
+                    $shows.innerHTML=`<p>Error ${err.status}:${message}</p>`;                    
+                }
+            }
+        
+        }
+    })
+
 
 </script>
 </body>
