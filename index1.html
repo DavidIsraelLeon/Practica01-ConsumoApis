@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Page Title</title>
+<title>Aplicaciones</title>
 
 
 <link rel ="stylesheet" type="text/css" href="css/bootstrap.min.css">
@@ -15,7 +15,7 @@
 
 <nav class="navbar navbar-dark bg-dark"> 
     <a class="navbar-brand" href="index.html">Aplicaciones Distribuidas</a>
-    <a class="btn btn-outline-success" href="../practica01/index1.html">LISTAR TODOS</a>
+    <a class="navbar-brand" href="#">LISTAR TODOS</a>
 
     <input  type="search" id="search" placeholder="Search" autocomplete="off" aria-label="Search">
     
@@ -30,6 +30,43 @@
             <img></img>
     </article>
     </template>
+
+   
+    <body>
+        <div class ="container mt-4 shadow-lg p3 mb-5 bg-body rounded">
+            <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>NOMBRE</th>
+                            <th>EMAIL</th>
+                        </tr>
+                    </thead>
+                    <tbody id="data">
+
+                    </tbody>
+
+
+            </table>
+
+    </body>
+    <script>
+        let url ='http://api.tvmaze.com/schedule'
+        fetch(url)
+        .then(response=>response.json())
+        .then(data=>mostrarData(data))
+        .catch(error=>console.log(error))
+
+
+        const mostrarData=(data)=>{
+            console.log(data)
+            let body=''
+            for (let i=0;i<data.length;i++){
+                body +=`<tr><td>${data[i].show.genres}</td><td>${data[i].show.name}</td><td>${data[i].show.url}</td></tr>`
+            }
+            document.getElementById('data').innerHTML=body
+        }
+    </script>
 
 <script>
     const d = document,
@@ -72,45 +109,6 @@
         
         }
     })
-
-    
-    function listar(){
-        try {
-                    
-                    $shows.innerHTML=`<h2>BOTON ACCIONADO</h2>`;
-                    api =`http://api.tvmaze.com/search/shows?q=girls`,   
-                    res= fetch(api),
-                    json=res.json();
-                    console.log(api,res,json);
-                    if(!res.ok) throw {status:res.status,statusText:res.statusText};
-
-                    
-                        json.forEach(element => {
-                            $template.querySelector("h4").textContent=element.show.name;
-                            $template.querySelector("div").textContent=element.show.url;    
-                            $template.querySelector("img").textContent=element.show.image;               
-
-                            let $clone=d.importNode($template,true);
-                            $fragment.append($clone);
-                        });
-                        
-                        $shows.appendChild($fragment);
-                    
-
-                } catch (err) {
-                    console.log(err);
-                    let message=err.statusText||"Ocurrio error";
-                    $shows.innerHTML=`<p>Error ${err.status}:${message}</p>`;                    
-                }
-    }
-    $shows=d.getElementById("buscar").onclick=function(){
-    listar();
-    }
-    
-
-
-
-
 </script>
 </body>
 </html>
