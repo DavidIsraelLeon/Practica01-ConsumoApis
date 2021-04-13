@@ -55,6 +55,7 @@
                         $shows.innerHTML=`<h3> No existe:${query}</h3>`;
                     }else {
                         json.forEach(element => {
+                            $shows.innerHTML=``;
                             $template.querySelector("h4").textContent=element.show.name;
                             $template.querySelector("div").textContent=element.show.url;    
                             $template.querySelector("img").textContent=element.show.image;               

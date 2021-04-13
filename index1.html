@@ -17,8 +17,6 @@
     <img src="../practica01/images/tvmaze.png" class="rounded float-left" alt="...">
     <a class="navbar-brand" href="index.html">Aplicaciones Distribuidas</a>
 
-
-    <input  type="search" id="search" placeholder="Search" autocomplete="off" aria-label="Search">
     
 </nav>
 
@@ -52,7 +50,8 @@
 
     </body>
     <script>
-        let url ='http://api.tvmaze.com/schedule'
+        //let url ='http://api.tvmaze.com/schedule'
+        let url ='http://api.tvmaze.com/shows'
         fetch(url)
         .then(response=>response.json())
         .then(data=>mostrarData(data))
@@ -63,7 +62,7 @@
             console.log(data)
             let body=''
             for (let i=0;i<data.length;i++){
-                body +=`<tr><td>${data[i].show.genres}</td><td>${data[i].show.name}</td><td>${data[i].show.url}</td></tr>`
+                body +=`<tr><td>${data[i].genres}</td><td>${data[i].name}</td><td>${data[i].url}</td></tr>`
             }
             document.getElementById('data').innerHTML=body
         }
