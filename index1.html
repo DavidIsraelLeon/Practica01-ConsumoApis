@@ -39,6 +39,7 @@
                             <th>Genero</th>
                             <th>NOMBRE</th>
                             <th>LINK</th>
+                            <th>rating</th>
                         </tr>
                     </thead>
                     <tbody id="data">
@@ -62,53 +63,12 @@
             console.log(data)
             let body=''
             for (let i=0;i<data.length;i++){
-                body +=`<tr><td>${data[i].genres}</td><td>${data[i].name}</td><td>${data[i].url}</td></tr>`
+                body +=`<tr><td>${data[i].genres}</td><td>${data[i].name}</td><td>${data[i].name}</td><td>${data[i].rating.average}</td></tr>`
             }
             document.getElementById('data').innerHTML=body
         }
     </script>
 
-<script>
-    const d = document,
-    $shows=d.getElementById("shows"),
-    $template=d.getElementById("show-template").content,
-    $fragment=d.createDocumentFragment();
-    d.addEventListener('keypress',async e=>{
-        if(e.target.matches("#search")){
-            //console.log(e.key)
-            if (e.key==="Enter"){
-                try {
-                    let query = e.target.value.toLowerCase(),
-                    api =`http://api.tvmaze.com/search/shows?q=${query}`,   
-                    res= await fetch(api),
-                    json=await res.json();
-                    console.log(api,res,json);
-                    if(!res.ok) throw {status:res.status,statusText:res.statusText};
-
-                    if (json.length===0){
-                        $shows.innerHTML=`<h3> No existe:${query}</h3>`;
-                    }else {
-                        json.forEach(element => {
-                            $template.querySelector("h4").textContent=element.show.name;
-                            $template.querySelector("div").textContent=element.show.url;    
-                            $template.querySelector("img").textContent=element.show.image;               
-
-                            let $clone=d.importNode($template,true);
-                            $fragment.append($clone);
-                        });
-                        
-                        $shows.appendChild($fragment);
-                    }
-
-                } catch (err) {
-                    console.log(err);
-                    let message=err.statusText||"Ocurrio error";
-                    $shows.innerHTML=`<p>Error ${err.status}:${message}</p>`;                    
-                }
-            }
-        
-        }
-    })
 </script>
 </body>
 </html>

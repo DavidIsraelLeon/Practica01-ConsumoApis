@@ -16,21 +16,22 @@
 <nav class="navbar navbar-dark bg-dark"> 
     <img src="../practica01/images/tvmaze.png" class="rounded float-left" alt="...">
     <a class="navbar-brand" href="index.html">Aplicaciones Distribuidas</a>
+    <input  class="btn btn-outline-secondary" type="search" id="search" placeholder="Search" autocomplete="off" aria-label="Search">
+    
     <a class="btn btn-outline-success" href="../practica01/index1.html">LISTAR TODOS</a>
    
 
-    <input  type="search" id="search" placeholder="Search" autocomplete="off" aria-label="Search">
     
 </nav>
 
 <section id ="shows" class="grid-fluid">    </section>
+    
     <template id="show-template">
             <article class="show">
 
             <h4  class="alert alert-dark" ></h4>
-            
-            <div></div>
-            <img></img>
+            <img>
+            <a style="margin: auto;"></a>
     </article>
     </template>
 
@@ -56,9 +57,14 @@
                     }else {
                         json.forEach(element => {
                             $shows.innerHTML=``;
-                            $template.querySelector("h4").textContent=element.show.name;
-                            $template.querySelector("div").textContent=element.show.url;    
-                            $template.querySelector("img").textContent=element.show.image;               
+                            $template.querySelector("h4").textContent=element.show.name ? element.show.name:"no tiene nombre";
+                            $template.querySelector("a").href=element.show.url;
+                            $template.querySelector("a").textContent=element.show.url;
+                            $template.querySelector("a").target=element.show.url;        
+                            $template.querySelector("img").src=element.show.image.medium;
+                            $template.querySelector("img").alt=element.show.name;
+                            $template.querySelector("img").style.maxWidth="100%";
+                                           
 
                             let $clone=d.importNode($template,true);
                             $fragment.append($clone);
@@ -76,44 +82,6 @@
         
         }
     })
-
-    
-    function listar(){
-        try {
-                    
-                    $shows.innerHTML=`<h2>BOTON ACCIONADO</h2>`;
-                    api =`http://api.tvmaze.com/search/shows?q=girls`,   
-                    res= fetch(api),
-                    json=res.json();
-                    console.log(api,res,json);
-                    if(!res.ok) throw {status:res.status,statusText:res.statusText};
-
-                    
-                        json.forEach(element => {
-                            $template.querySelector("h4").textContent=element.show.name;
-                            $template.querySelector("div").textContent=element.show.url;    
-                            $template.querySelector("img").textContent=element.show.image;               
-
-                            let $clone=d.importNode($template,true);
-                            $fragment.append($clone);
-                        });
-                        
-                        $shows.appendChild($fragment);
-                    
-
-                } catch (err) {
-                    console.log(err);
-                    let message=err.statusText||"Ocurrio error";
-                    $shows.innerHTML=`<p>Error ${err.status}:${message}</p>`;                    
-                }
-    }
-    $shows=d.getElementById("buscar").onclick=function(){
-    listar();
-    }
-    
-
-
-
 
 </script>
 </body>
